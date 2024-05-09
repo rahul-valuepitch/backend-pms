@@ -1,8 +1,10 @@
 import { Router } from "express";
+import { createUserProfileController } from "../controllers/user.controllers.js";
 
 // Router
 const router = new Router();
 
-// Creating Routes
+// Routes
+router.route("/register").post(createUserProfileController);
 
 export default router;
