@@ -7,6 +7,7 @@ import {
   emailValidation,
   minLengthValidation,
   compareFieldValidation,
+  phoneValidation,
 } from "../utils/validators.js";
 import {
   generate20CharToken,
@@ -281,18 +282,30 @@ export const updateProfileController = asyncHandler(async (req, res) => {
 
   // * Get data from frontend
   const { phone, gender, birthDate, pronounce } = req.body;
-  const avatar = req.file?.path;
-  if (!avatar) {
-    throw new ApiError(400, "Avatar is required");
-  }
 
   // * Validate data
   notEmptyValidation([phone, gender, birthDate]);
+  phoneValidation(phone);
+
+  // * Check if phone already exists
+  const existingUser = await User.findOne({ phone });
+  if (existingUser && existingUser._id.toString() !== req.user._id.toString()) {
+    return res
+      .status(400)
+      .json(new ApiResponse(400, null, "Phone number already exists"));
+  }
 
   // * Update user profile
+  const user = req.user;
+
+  user.phone = phone;
+  user.gender = gender;
+  user.birthDate = birthDate;
+  user.pronounce = pronounce;
+  await user.save();
 
   // * Sending Response
   return res
     .status(200)
-    .json(new ApiResponse(200, req.user, "User updated successfully!"));
+    .json(new ApiResponse(200, user, "User updated successfully!"));
 });

@@ -9,6 +9,18 @@ export const emailValidation = (email) => {
   return email;
 };
 
+// Phone Validation
+export const phoneValidation = (phone) => {
+  const phoneRegex = /^[0-9]{10,}$/;
+  if (!phoneRegex.test(phone)) {
+    throw new ApiError(
+      400,
+      "Please enter a valid phone number with at least 10 digits!"
+    );
+  }
+  return phone;
+};
+
 // Not Empty Validation
 export const notEmptyValidation = (fields) => {
   if (fields.some((field) => field?.trim() === "")) {
