@@ -10,8 +10,8 @@ import {
 } from "../utils/validators.js";
 import { generateAccessRefreshToken, options } from "../utils/generateToken.js";
 
-// Create User Profile
-export const createUserProfileController = asyncHandler(async (req, res) => {
+// Register Controller
+export const registerController = asyncHandler(async (req, res) => {
   /**
    * TODO: Get data from frontend
    * TODO: Validate data
@@ -61,4 +61,113 @@ export const createUserProfileController = asyncHandler(async (req, res) => {
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json(new ApiResponse(201, user, "User created successfully!"));
+});
+
+// Login Controller
+export const loginController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get data from user
+   * TODO: Validate data
+   * TODO: Check if user exists
+   * TODO: Check Password
+   * TODO: Generate Token
+   * TODO: Sending Response
+   * **/
+
+  // * Get data from user
+  const { email, password } = req.body;
+
+  // * Validate data
+  notEmptyValidation([email, password]);
+  emailValidation(email);
+  minLengthValidation(password, 6, "Password");
+
+  // * Check if user exists
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(400, "Invalid email or password");
+  }
+
+  // * Check Password
+  const passwordCheck = await user.isPasswordCorrect(password);
+  if (!passwordCheck) {
+    throw new ApiError(401, "Invalid password");
+  }
+
+  // * Generate Token
+  const { accessToken, refreshToken } = await generateAccessRefreshToken(
+    user._id
+  );
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+
+  // * Sending Response
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in successfully!"
+      )
+    );
+});
+
+// Logout Controller
+export const logoutController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Update token in backend
+   * TODO: Delete cookie from frontend
+   * TODO: Sending Response
+   * **/
+
+  // * Update token in backend
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: { refreshToken: undefined },
+    },
+    { new: true }
+  );
+
+  // * Sending Response & Delete cookie from frontend
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out!"));
+});
+
+// Update User Profile
+export const updateProfileController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get data from frontend
+   * TODO: Validate data
+   * TODO: Update user profile
+   * TODO: Send Response with user profile
+   * **/
+
+  // * Get data from frontend
+  const { phone, gender, birthDate, pronounce } = req.body;
+  const avatar = req.file?.path;
+  if (!avatar) {
+    throw new ApiError(400, "Avatar is required");
+  }
+
+  // * Validate data
+  notEmptyValidation([phone, gender, birthDate]);
+
+  // * Update user profile
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "User updated successfully!"));
 });

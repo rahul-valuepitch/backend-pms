@@ -86,6 +86,11 @@ UserSchema.methods.generateRefreshToken = function () {
   );
 };
 
+// * Password Check Method
+UserSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
 const User = mongoose.model("User", UserSchema);
 
 export default User;
