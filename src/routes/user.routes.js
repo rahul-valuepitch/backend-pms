@@ -1,5 +1,7 @@
 import { Router } from "express";
 import {
+  forgotPasswordController,
+  forgotPasswordRequestController,
   loginController,
   logoutController,
   registerController,
@@ -14,6 +16,9 @@ const router = new Router();
 router.route("/register").post(registerController);
 router.route("/login").post(loginController);
 router.route("/logout").post(verifyUser, logoutController);
+router.route("/forgot-password").post(forgotPasswordController);
+router.route("/forgot-password-request").patch(forgotPasswordRequestController);
+
 router.route("/update").post(verifyUser, updateProfileController);
 
 export default router;

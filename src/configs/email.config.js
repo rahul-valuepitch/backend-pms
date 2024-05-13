@@ -1,6 +1,16 @@
+import ejs from "ejs";
 import nodemailer from "nodemailer";
-import connectServer from "../configs/server.config.js";
 import ApiError from "../utils/apiError.js";
+
+// Render Email Template
+const renderEmailTemplate = async (templatePath, data) => {
+  try {
+    const renderedTemplate = await ejs.renderFile(templatePath, data);
+    return renderedTemplate;
+  } catch (error) {
+    throw new Error(`Error rendering email template: ${error.message}`);
+  }
+};
 
 // Transporter (Setting up SMTP details)
 export const transporter = nodemailer.createTransport({
@@ -13,31 +23,31 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-// Sending Verification Code Email
-export const sendVerificationCodeEmail = async (sendTo, verificationCode) => {
-  const appUrl = "http://localhost:3001";
-  try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: sendTo,
-      subject: "Express Blog - Verification Code",
-      html: `<h1>Hello ${sendTo}</h1><p>Please verify your email by clicking on the link below</p><a href="${appUrl}/api/users/verify-account?token=${verificationCode}">Verify</a>`,
-    });
-    return info;
-  } catch (error) {
-    throw new ApiError(500, `Error sending Email :: ${error}`);
-  }
-};
-
 // Sending Password Reset Email
-export const sendPasswordResetEmail = async (sendTo, resetPasswordCode) => {
-  const appUrl = "http://localhost:3001";
+export const sendPasswordResetEmail = async (
+  sendTo,
+  username,
+  resetPasswordCode
+) => {
+  const appUrl = `http://localhost:8000`;
+
+  const passwordResetData = {
+    email: sendTo,
+    username,
+    resetLink: `${appUrl}/api/users/forgot-password-request?token=${resetPasswordCode}`,
+  };
+
   try {
+    const emailTemplate = await renderEmailTemplate(
+      "src/templates/emailer/password-reset.ejs",
+      passwordResetData
+    );
+
     const info = await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: sendTo,
-      subject: "Express Blog - Reset Your Password",
-      html: `<h1>Hello ${sendTo}</h1><p>Please reset your password by clicking on the below link</p><a href="${appUrl}/api/users/forgot-password-request?token=${resetPasswordCode}">Reset Password</a>`,
+      subject: "Project Management System - Reset Your Password",
+      html: emailTemplate,
     });
     return info;
   } catch (error) {

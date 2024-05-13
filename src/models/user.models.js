@@ -31,17 +31,8 @@ const UserSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
-    verified: {
-      type: String,
-    },
     refreshToken: {
       type: String,
-    },
-    verificationToken: {
-      type: String,
-    },
-    verificationTokenExpiry: {
-      type: Date,
     },
     passwordResetToken: {
       type: String,
