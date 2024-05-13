@@ -271,7 +271,7 @@ export const resetPasswordController = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password updated successfully!"));
 });
 
-// Update User Profile
+// Update User Profile Controller
 export const updateProfileController = asyncHandler(async (req, res) => {
   /**
    * TODO: Get data from frontend
@@ -308,4 +308,31 @@ export const updateProfileController = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, user, "User updated successfully!"));
+});
+
+// Update User Avatar Controller
+export const updateAvatarController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get File from frontend
+   * TODO: Upload File
+   * TODO: Sending Response
+   * **/
+
+  // * Get File from frontend
+  const avatar = req.file?.path;
+  if (!avatar) {
+    throw new ApiError(400, "Please upload an image");
+  }
+
+  // * Upload file
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    { $set: { avatar } },
+    { new: true }
+  ).select("-password -refreshToken");
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Avatar image uploaded successfully!"));
 });
