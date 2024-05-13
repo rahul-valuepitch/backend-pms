@@ -399,3 +399,23 @@ export const updateAvatarController = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, user, "Avatar image uploaded successfully!"));
 });
+
+// Remove User Avatar Controller
+export const removeAvatarController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get User from request and remove avatar
+   * TODO: Sending Response
+   * **/
+
+  // * Get User from request and remove avatar
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    { $unset: { avatar: "" } },
+    { new: true }
+  );
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Avatar removed successfully!"));
+});
