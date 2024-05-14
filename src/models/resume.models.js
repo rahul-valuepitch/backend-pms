@@ -1,11 +1,17 @@
 import mongoose from "mongoose";
 import User from "./user.models.js";
+import Template from "./templates.models.js";
 
 const ResumeSchema = new mongoose.Schema(
   {
-    createdBy: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: User,
+      required: true,
+    },
+    template: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: Template,
       required: true,
     },
     jobTitle: { type: String },

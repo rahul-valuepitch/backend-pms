@@ -34,7 +34,7 @@ router.route("/reset-password").patch(verifyUser, resetPasswordController);
 router.route("/update-profile").patch(verifyUser, updateProfileController);
 router
   .route("/update-avatar")
-  .patch(verifyUser, avatarUpload.single("avatar"), updateAvatarController);
+  .patch(verifyUser, avatarUpload, updateAvatarController);
 router.route("/remove-avatar").patch(verifyUser, removeAvatarController);
 
 export default router;

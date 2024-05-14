@@ -4,7 +4,7 @@ import fs from "fs";
 
 // Uploading files Middleware
 // It uploads files in public/route/year/month/day/filename
-const uploadMiddleware = (folderName) => {
+const uploadMiddleware = (folderName, multiple = false) => {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       // Get current date
@@ -35,7 +35,12 @@ const uploadMiddleware = (folderName) => {
     },
   });
 
-  return multer({ storage: storage });
+  // Return the multer middleware based on multiple flag
+  if (multiple) {
+    return multer({ storage: storage }).array(folderName);
+  } else {
+    return multer({ storage: storage }).single(folderName);
+  }
 };
 
 export default uploadMiddleware;

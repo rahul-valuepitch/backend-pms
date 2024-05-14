@@ -1,21 +1,30 @@
 import { Router } from "express";
-import { verifyUser } from "../middlewares/auth.middleware.js";
+import { isAuthorized, verifyUser } from "../middlewares/auth.middleware.js";
 import uploadMiddleware from "../middlewares/multer.middleware.js";
 import {
-  addProfilePhotoController,
-  profileDetailController,
+  createResumeController,
+  deleteResumeController,
+  getResumeDetailController,
+  getUserResumesController,
+  updateResumeController,
 } from "../controllers/resume.controllers.js";
 
 // Router
 const router = new Router();
 
 // Upload folders
-const photoUpload = uploadMiddleware("photo");
 
 // Routes
-router.route("/update-profile").post(verifyUser, profileDetailController);
+router.route("/").get(verifyUser, getUserResumesController);
+router.route("/").post(verifyUser, createResumeController);
 router
-  .route("/update-profile-photo")
-  .post(verifyUser, photoUpload.single("photo"), addProfilePhotoController);
+  .route("/:_id")
+  .get(verifyUser, isAuthorized("Resume"), getResumeDetailController);
+router
+  .route("/:_id")
+  .delete(verifyUser, isAuthorized("Resume"), deleteResumeController);
+router
+  .route("/:_id")
+  .patch(verifyUser, isAuthorized("Resume"), updateResumeController);
 
 export default router;
