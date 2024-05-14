@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import ApiError from "../utils/apiError.js";
 
 // Email Validation
@@ -24,7 +25,7 @@ export const phoneValidation = (phone) => {
 // Not Empty Validation
 export const notEmptyValidation = (fields) => {
   if (fields.some((field) => field?.trim() === "")) {
-    throw new ApiError(400, "All fields are required");
+    throw new ApiError(400, "fields with * are required");
   }
   return fields;
 };
@@ -50,4 +51,9 @@ export const compareFieldValidation = (
     throw new ApiError(400, errMsg);
   }
   return true;
+};
+
+// Is Valid ObjectId
+export const isValidObjectId = (id) => {
+  return mongoose.Types.ObjectId.isValid(id);
 };

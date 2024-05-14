@@ -1,11 +1,17 @@
 import mongoose from "mongoose";
+import User from "./user.models.js";
 
 const ResumeSchema = new mongoose.Schema(
   {
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: User,
+      required: true,
+    },
     jobTitle: { type: String },
-    firstname: { type: String },
-    middlename: { type: String },
-    lastname: { type: String },
+    firstName: { type: String },
+    middleName: { type: String },
+    lastName: { type: String },
     email: { type: String },
     phone: { type: String },
     address: { type: String },
@@ -13,12 +19,13 @@ const ResumeSchema = new mongoose.Schema(
     state: { type: String },
     zip: { type: String },
     drivingLicense: { type: String },
-    Nationality: { type: String },
+    nationality: { type: String },
     placeOfBirth: { type: String },
     dateOfBirth: { type: Date },
     gender: { type: String },
     maritalStatus: { type: String },
     summary: { type: String },
+    photo: { type: String },
     professions: [
       {
         title: { type: String },

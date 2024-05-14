@@ -2,6 +2,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 
 import userRouter from "../routes/user.routes.js";
+import templateRouter from "../routes/templates.routes.js";
+import resumeRouter from "../routes/resume.routes.js";
 
 const app = express();
 
@@ -13,6 +15,8 @@ app.use(express.static("public"));
 
 // Routes
 app.use("/api/user", userRouter);
+app.use("/api/template", templateRouter);
+app.use("/api/resume", resumeRouter);
 
 // Test Route
 app.get("/api", (req, res) => {
