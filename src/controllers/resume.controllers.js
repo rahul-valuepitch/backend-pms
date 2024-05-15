@@ -76,7 +76,6 @@ export const getResumeDetailController = asyncHandler(async (req, res) => {
   // * Search for resume based on id
   const resume = await Resume.findById(_id);
 
-  console.log(resume);
   if (!resume) throw new ApiError(404, "Resume not found");
 
   // * Sending Response
@@ -247,6 +246,7 @@ export const deleteResumeProfilePhotoController = asyncHandler(
   }
 );
 
+// ! Profession Controllers
 // Get All Profession Controller
 export const getAllProfessionController = asyncHandler(async (req, res) => {
   /**
@@ -306,128 +306,301 @@ export const addProfessionController = asyncHandler(async (req, res) => {
 });
 
 // Detail Profession Controller
-export const detailProfessionController = asyncHandler(
-  async (req, res, pid) => {
-    /**
-     * TODO: Find the profession by id
-     * TODO: Sending Response
-     * **/
+export const detailProfessionController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Find the profession by id
+   * TODO: Sending Response
+   * **/
 
-    // * Find the profession by id
-    const resumeId = req.params._id;
-    const professionId = req.query.pid;
+  // * Find the profession by id
+  const resumeId = req.params._id;
+  const professionId = req.query.pid;
 
-    const resume = await Resume.findById(resumeId);
+  const resume = await Resume.findById(resumeId);
 
-    const professionIndex = resume.professions.findIndex(
-      (prof) => prof._id.toString() === professionId
-    );
-    if (professionIndex === -1) {
-      throw new ApiError(404, "Profession not found");
-    }
-
-    // * Sending Response
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          resume.professions[professionIndex],
-          "Profession fetched successfully!"
-        )
-      );
+  const professionIndex = resume.professions.findIndex(
+    (prof) => prof._id.toString() === professionId
+  );
+  if (professionIndex === -1) {
+    throw new ApiError(404, "Profession not found");
   }
-);
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        resume.professions[professionIndex],
+        "Profession fetched successfully!"
+      )
+    );
+});
 
 // Update Profession Controller
-export const updateProfessionController = asyncHandler(
-  async (req, res, pid) => {
-    /**
-     * TODO: Get data from frontend
-     * TODO: Find the profession by id
-     * TODO: Update profession data
-     * TODO: Sending Response
-     * **/
+export const updateProfessionController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get data from frontend
+   * TODO: Find the profession by id
+   * TODO: Update profession data
+   * TODO: Sending Response
+   * **/
 
-    // * Get data from frontend
-    const { title, employer, startDate, endDate, city, description } = req.body;
+  // * Get data from frontend
+  const { title, employer, startDate, endDate, city, description } = req.body;
 
-    // * Find the profession by id
-    const resumeId = req.params._id;
-    const professionId = req.query.pid;
+  // * Find the profession by id
+  const resumeId = req.params._id;
+  const professionId = req.query.pid;
 
-    const resume = await Resume.findById(resumeId);
+  const resume = await Resume.findById(resumeId);
 
-    const professionIndex = resume.professions.findIndex(
-      (prof) => prof._id.toString() === professionId
-    );
-    if (professionIndex === -1) {
-      throw new ApiError(404, "Profession not found");
-    }
-
-    // * Update profession data
-    const professionToUpdate = resume.professions[professionIndex];
-
-    professionToUpdate.title = title;
-    professionToUpdate.employer = employer;
-    professionToUpdate.startDate = startDate;
-    professionToUpdate.endDate = endDate;
-    professionToUpdate.city = city;
-    professionToUpdate.description = description;
-
-    const updatedResume = await resume.save();
-
-    // * Sending Response
-    res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          updatedResume.professions[professionIndex],
-          "Profession updated successfully!"
-        )
-      );
+  const professionIndex = resume.professions.findIndex(
+    (prof) => prof._id.toString() === professionId
+  );
+  if (professionIndex === -1) {
+    throw new ApiError(404, "Profession not found");
   }
-);
+
+  // * Update profession data
+  const professionToUpdate = resume.professions[professionIndex];
+
+  professionToUpdate.title = title;
+  professionToUpdate.employer = employer;
+  professionToUpdate.startDate = startDate;
+  professionToUpdate.endDate = endDate;
+  professionToUpdate.city = city;
+  professionToUpdate.description = description;
+
+  const updatedResume = await resume.save();
+
+  // * Sending Response
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedResume.professions[professionIndex],
+        "Profession updated successfully!"
+      )
+    );
+});
 
 // Delete Profession Controller
-export const deleteProfessionController = asyncHandler(
-  async (req, res, pid) => {
-    /**
-     * TODO: Get profession from request
-     * TODO: Delete Profession
-     * TODO: Sending Response
-     * **/
+export const deleteProfessionController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get profession from request
+   * TODO: Delete Profession
+   * TODO: Sending Response
+   * **/
 
-    // * Get profession from request
-    const resumeId = req.params._id;
-    const professionId = req.query.pid;
+  // * Get profession from request
+  const resumeId = req.params._id;
+  const professionId = req.query.pid;
 
-    const resume = await Resume.findById(resumeId);
+  const resume = await Resume.findById(resumeId);
 
-    const professionIndex = resume.professions.findIndex(
-      (prof) => prof._id.toString() === professionId
-    );
-    if (professionIndex === -1) {
-      throw new ApiError(404, "Profession not found");
-    }
-
-    // * Delete Profession
-    resume.professions.splice(professionIndex, 1);
-    const updatedResume = await resume.save();
-
-    // * Sending Response
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          updatedResume.professions,
-          "Profession deleted successfully!"
-        )
-      );
+  const professionIndex = resume.professions.findIndex(
+    (prof) => prof._id.toString() === professionId
+  );
+  if (professionIndex === -1) {
+    throw new ApiError(404, "Profession not found");
   }
-);
+
+  // * Delete Profession
+  resume.professions.splice(professionIndex, 1);
+  const updatedResume = await resume.save();
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedResume.professions,
+        "Profession deleted successfully!"
+      )
+    );
+});
+// ! Profession Controllers
+
+// ! Education Controllers
+// Get All Education Controller
+export const getAllEducationController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get Resume from request
+   * TODO: Get all educations
+   * TODO: Sending Response
+   * **/
+
+  // * Get Resume from request
+  const resumeId = req.params._id;
+  const resume = await Resume.findById(resumeId);
+
+  // * Get all education
+  const education = resume.education;
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(new ApiResponse(200, education, "Education fetched successfully!"));
+});
+
+// Add Education Controller
+export const addEducationController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get Resume from request
+   * TODO: Get data from frontend
+   * TODO: Add education in resume
+   * TODO: Sending Response
+   * **/
+
+  // * Get Resume from request
+  const resumeId = req.params._id;
+  const resume = await Resume.findById(resumeId);
+
+  // * Get data from frontend
+  const { school, degree, startDate, endDate, city, description } = req.body;
+
+  // * Add Education in Resume
+  const newEducation = {
+    school,
+    degree,
+    startDate,
+    endDate,
+    city,
+    description,
+  };
+
+  resume.education.push(newEducation);
+  const updatedResume = await resume.save();
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { updatedResume }, "Education added successfully!")
+    );
+});
+
+// Detail Education Controller
+export const detailEducationController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Find the education by id
+   * TODO: Sending Response
+   * **/
+
+  // * Find the education by id
+  const resumeId = req.params._id;
+  const educationId = req.query.eid;
+
+  const resume = await Resume.findById(resumeId);
+
+  const educationIndex = resume.education.findIndex(
+    (prof) => prof._id.toString() === educationId
+  );
+  if (educationIndex === -1) {
+    throw new ApiError(404, "Education not found");
+  }
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        resume.education[educationIndex],
+        "Education fetched successfully!"
+      )
+    );
+});
+
+// Update Education Controller
+export const updateEducationController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get data from frontend
+   * TODO: Find the education by id
+   * TODO: Update education data
+   * TODO: Sending Response
+   * **/
+
+  // * Get data from frontend
+  const { school, degree, startDate, endDate, city, description } = req.body;
+
+  // * Find the education by id
+  const resumeId = req.params._id;
+  const educationId = req.query.eid;
+
+  const resume = await Resume.findById(resumeId);
+
+  const educationIndex = resume.education.findIndex(
+    (prof) => prof._id.toString() === educationId
+  );
+  if (educationIndex === -1) {
+    throw new ApiError(404, "Education not found");
+  }
+
+  // * Update education data
+  const educationToUpdate = resume.education[educationIndex];
+
+  educationToUpdate.school = school;
+  educationToUpdate.degree = degree;
+  educationToUpdate.startDate = startDate;
+  educationToUpdate.endDate = endDate;
+  educationToUpdate.city = city;
+  educationToUpdate.description = description;
+
+  const updatedResume = await resume.save();
+
+  // * Sending Response
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedResume.education[educationIndex],
+        "Education updated successfully!"
+      )
+    );
+});
+
+// Delete Education Controller
+export const deleteEducationController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get education from request
+   * TODO: Delete education
+   * TODO: Sending Response
+   * **/
+
+  // * Get education from request
+  const resumeId = req.params._id;
+  const educationId = req.query.eid;
+
+  const resume = await Resume.findById(resumeId);
+
+  const educationIndex = resume.education.findIndex(
+    (prof) => prof._id.toString() === educationId
+  );
+  if (educationIndex === -1) {
+    throw new ApiError(404, "Education not found");
+  }
+
+  // * Delete education
+  resume.education.splice(educationIndex, 1);
+  const updatedResume = await resume.save();
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedResume.education,
+        "Education deleted successfully!"
+      )
+    );
+});
+// ! Education Controllers
 
 // Update Resume Controller
 export const updateResumeController = asyncHandler(async (req, res) => {
@@ -468,17 +641,42 @@ export const updateResumeController = asyncHandler(async (req, res) => {
 
     //  Detail Profession
     case "detail-profession":
-      detailProfessionController(req, res, pid);
+      detailProfessionController(req, res);
       break;
 
     //  Update Profession
     case "update-profession":
-      updateProfessionController(req, res, pid);
+      updateProfessionController(req, res);
       break;
 
     //  Delete Profession
     case "delete-profession":
-      deleteProfessionController(req, res, pid);
+      deleteProfessionController(req, res);
+      break;
+
+    //  Get All Education
+    case "get-all-education":
+      getAllEducationController(req, res);
+      break;
+
+    //  Add Education
+    case "add-education":
+      addEducationController(req, res);
+      break;
+
+    //  Detail Education
+    case "detail-education":
+      detailEducationController(req, res);
+      break;
+
+    //  Update Education
+    case "update-education":
+      updateEducationController(req, res);
+      break;
+
+    //  Delete Education
+    case "delete-education":
+      deleteEducationController(req, res);
       break;
 
     default:
