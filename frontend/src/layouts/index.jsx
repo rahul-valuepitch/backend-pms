@@ -1,4 +1,5 @@
-import Auth from "./Auth";
-import UnAuth from "./UnAuth";
+import Dashboard from "./Dashboard";
+import Resume from "./Resume";
+import Website from "./Website";
 
-export { Auth, UnAuth };
+export { Dashboard, Resume, Website };
