@@ -1990,6 +1990,192 @@ export const deleteCurricularController = asyncHandler(async (req, res) => {
 });
 // ! Extra Curricular Controllers
 
+// ! Custom Section Controllers
+// Get All Custom Section Controller
+export const getAllCustomSectionController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get Resume from request
+   * TODO: Get all custom section
+   * TODO: Sending Response
+   * **/
+
+  // * Get Resume from request
+  const resumeId = req.params._id;
+  const resume = await Resume.findById(resumeId);
+
+  // * Get all custom section
+  const customSection = resume.customSections;
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        customSection,
+        "Custom Section fetched successfully!"
+      )
+    );
+});
+
+// Add Custom Section Controller
+export const addCustomSectionController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get Resume from request
+   * TODO: Get data from frontend
+   * TODO: Add custom section in resume
+   * TODO: Sending Response
+   * **/
+
+  // * Get Resume from request
+  const resumeId = req.params._id;
+  const resume = await Resume.findById(resumeId);
+
+  // * Get data from frontend
+  const { title, startDate, endDate, city, description } = req.body;
+
+  // * Add Custom Section in Resume
+  const newCustomSection = {
+    title,
+    startDate,
+    endDate,
+    city,
+    description,
+  };
+
+  resume.customSections.push(newCustomSection);
+  const updatedResume = await resume.save();
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedResume.customSections,
+        "Custom Section added successfully!"
+      )
+    );
+});
+
+// Detail Custom Section Controller
+export const detailCustomSectionController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Find the custom section by id
+   * TODO: Sending Response
+   * **/
+
+  // * Find the custom section by id
+  const resumeId = req.params._id;
+  const customSectionId = req.query.csid;
+
+  const resume = await Resume.findById(resumeId);
+
+  const customSectionIndex = resume.customSections.findIndex(
+    (item) => item._id.toString() === customSectionId
+  );
+  if (customSectionIndex === -1) {
+    throw new ApiError(404, "Custom Section not found");
+  }
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        resume.customSections[customSectionIndex],
+        "Custom Section fetched successfully!"
+      )
+    );
+});
+
+// Update Custom Section Controller
+export const updateCustomSectionController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get data from frontend
+   * TODO: Find the custom section by id
+   * TODO: Update custom section data
+   * TODO: Sending Response
+   * **/
+
+  // * Get data from frontend
+  const { title, startDate, endDate, city, description } = req.body;
+
+  // * Find the custom section by id
+  const resumeId = req.params._id;
+  const customSectionId = req.query.csid;
+
+  const resume = await Resume.findById(resumeId);
+
+  const customSectionIndex = resume.customSections.findIndex(
+    (item) => item._id.toString() === customSectionId
+  );
+  if (customSectionIndex === -1) {
+    throw new ApiError(404, "Custom Section not found");
+  }
+
+  // * Update custom section data
+  const customSectionToUpdate = resume.customSections[customSectionIndex];
+
+  customSectionToUpdate.title = title;
+  customSectionToUpdate.startDate = startDate;
+  customSectionToUpdate.endDate = endDate;
+  customSectionToUpdate.city = city;
+  customSectionToUpdate.description = description;
+
+  const updatedResume = await resume.save();
+
+  // * Sending Response
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedResume.customSections[customSectionIndex],
+        "Custom Section updated successfully!"
+      )
+    );
+});
+
+// Delete Custom Section Controller
+export const deleteCustomSectionController = asyncHandler(async (req, res) => {
+  /**
+   * TODO: Get custom section from request
+   * TODO: Delete custom section
+   * TODO: Sending Response
+   * **/
+
+  // * Get custom section from request
+  const resumeId = req.params._id;
+  const cuistomSectionId = req.query.csid;
+
+  const resume = await Resume.findById(resumeId);
+
+  const customSectionIndex = resume.customSections.findIndex(
+    (item) => item._id.toString() === cuistomSectionId
+  );
+  if (customSectionIndex === -1) {
+    throw new ApiError(404, "Custom Section not found");
+  }
+
+  // * Delete custom section
+  resume.customSections.splice(customSectionIndex, 1);
+  const updatedResume = await resume.save();
+
+  // * Sending Response
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        updatedResume.customSections,
+        "Custom Section deleted successfully!"
+      )
+    );
+});
+// ! Custom Section Controllers
+
 // Update Resume Controller
 export const updateResumeController = asyncHandler(async (req, res) => {
   const { action } = req.query;
@@ -2265,6 +2451,31 @@ export const updateResumeController = asyncHandler(async (req, res) => {
     //  Delete curricular
     case "delete-curricular":
       deleteCurricularController(req, res);
+      break;
+
+    //  Get All Custom Sections
+    case "get-all-custom-sections":
+      getAllCustomSectionController(req, res);
+      break;
+
+    //  Add custom section
+    case "add-custom-section":
+      addCustomSectionController(req, res);
+      break;
+
+    //  Detail custom section
+    case "detail-custom-section":
+      detailCustomSectionController(req, res);
+      break;
+
+    //  Update custom section
+    case "update-custom-section":
+      updateCustomSectionController(req, res);
+      break;
+
+    //  Delete custom section
+    case "delete-custom-section":
+      deleteCustomSectionController(req, res);
       break;
 
     default:
