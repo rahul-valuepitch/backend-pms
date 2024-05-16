@@ -6,7 +6,7 @@ import { Register, Login } from "./pages/authentication/index";
 
 const App = () => {
   return (
-    <div>
+    <>
       <Router>
         <Routes>
           <Route path="/" element={<Website />}>
@@ -20,7 +20,7 @@ const App = () => {
           <Route path="/resume" element={<Resume />}></Route>
         </Routes>
       </Router>
-    </div>
+    </>
   );
 };
 
